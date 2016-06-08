@@ -66,10 +66,10 @@ We have to begin by setting up a program structure for our application.
 Furthermore, we have to do this in order to apply the Elm architecture to our program and understand what it is we are 
 going to show in our browser. Therefore, we can follow the Elm Docs and have a program that follows the following outline:
 
-main =
- model = model
- view = view 
- update = update
+Main: =>
+model = model
+view = view 
+update = update
 
 --}
 
@@ -79,7 +79,7 @@ main =
         { init = init
         , view = view
         , update = (\msg model -> AddSetStorage (update msg model))
-        , subscriptions = \_ Sub.none -- Similar to 'view' it is always applied to the latest model and captures any updates within the model.
+        , subscriptions = \_ Sub.none -- Similar to 'view' it is always applied to the latest model and captures any other external inputs within our model.
         }
 {-- 
 
@@ -93,6 +93,9 @@ In conjunction, the 'Cmd' type is used for specifying 1 which effects you need a
 
 With this in mind, the ports act like a hole in the side of our program that can have a JavaScript source feed plugged into. 
 What is nice about this is that it allows our program to declare JavaScript when we only need it.
+
+Note: 'Cmd' also known as Commands are a way for Elm to detect any runtime objects that involve side effects.
+These could be objects such as random numbers, random Http requests or saving Strings into local storage. 
 
 --}
 
@@ -152,5 +155,14 @@ emptyModel =
 
 1.1 SET UP MODEL ON INIT
 
+Reasons for having an Init Model is for users to see the current state of the model on page load. 
+Ideally, this means that on page load we can call our 'View' function with the initial model and render the state within our applications 'world'.
 
 --}
+
+init : Maybe Model -> (Model, Cmd Msg)
+init sateOfModel =
+        -- A Maybe helps with optional arguments, error handling, and records with optional fields.
+        -- Additionally, the withDefault method is substitute a default value, turning an optional value into a normal value.
+        Maybe.withDefault emptyModel stateOfModel ! [] -- Here our emptyModel now points to stateOfModel which ! (overides) all [] (Lists).
+

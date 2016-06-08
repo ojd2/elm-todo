@@ -1,6 +1,6 @@
 Elm Todo Program:
 
-References:
+REFERENCES:
 
 Html Module :
 
@@ -22,8 +22,31 @@ http://guide.elm-lang.org/interop/javascript.html
 
 String Package:
 
+(Standard String Library)
+
 http://package.elm-lang.org/packages/elm-lang/core/1.0.0/String
 
 Importing Modules:
 
+(More information about importing Ports)
+
 https://dennisreimann.de/articles/elm-import-modules.html
+
+Focus (Todo):
+
+(More information on how Focus is used to add focus to DOM elements)
+
+https://github.com/evancz/elm-architecture-tutorial/issues/49
+
+http://package.elm-lang.org/packages/evancz/focus/1.0.1/Focus
+
+Maybe Methods:
+
+(How Maybe is used for handling additional optional arguments and error cases etc)
+
+http://package.elm-lang.org/packages/elm-lang/core/1.0.0/Maybe
+
+Other overview of Elm Language:
+
+http://www.elm-tutorial.org/en/01-foundations/02-functions.html
+
