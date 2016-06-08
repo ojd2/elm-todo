@@ -116,16 +116,16 @@ AddSetStorage (model, cmds) =
 
 1.0 SET UP MODEL 
 
+The state and structure of the application logic ::
+
+1. Model -> Task -> Maybe Model
+2. Model -> NewTask -> Maybe Model
+3. Model -> EmptyTask -> Maybe Model
+
 --}
 
--- The state and structure of the application logic ::
-
--- 1. Model -> Task -> Maybe Model
--- 2. Model -> NewTask -> Maybe Model
--- 3. Model -> EmptyTask -> Maybe Model
-
 type alias Model =
-        { tasks = List Task
+        { tasks = List Task -- 'List' is Elm's array constructor.
         , field = String
         , visibility = String
         }
@@ -136,7 +136,7 @@ type alias Task =
         , completed = Bool
         }
 newTask : String -> Int -> Task
-newTask = desc id = 
+newTask = desc id = -- Passes both 'desc' & 'id' arguments and 'desc' is used to hold a new description.
         { description = desc
         , completed = False
         , editing = False
@@ -148,4 +148,9 @@ emptyModel =
         , visibility = "All"
         , field = ""
         }
+{--
 
+1.1 SET UP MODEL ON INIT
+
+
+--}
