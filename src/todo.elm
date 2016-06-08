@@ -91,10 +91,13 @@ Ports are declared in order to save the model on every update the model executes
 
 In conjunction, the 'Cmd' type is used for specifying 1 which effects you need access to and 2 the type of messages that will come back into your application.
 
+With this in mind, the ports act like a hole in the side of our program that can have a JavaScript source feed plugged into. 
+What is nice about this is that it allows our program to declare JavaScript when we only need it.
+
 --}
 
-port SetStorage : Model -> Cmd msg
-port focus : String -> Cmd msg
+port SetStorage : Model -> Cmd msg -- We want to use JavaScript for 'SetStorage' function.
+port focus : String -> Cmd msg -- We also want to use JavaScript for 'focus' that takes a String and stores the Cmd.
 
 {--
 
