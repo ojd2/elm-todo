@@ -1,0 +1,16 @@
+Elm Todo Program:
+
+References:
+
+Html Module :
+
+(Contains Lazy, Events, Attributes and App)
+
+https://github.com/elm-lang/html/tree/master/src/Html
+
+Ports, Model updates and capturing Model updates :
+
+(Blog post that breaks down core syntax design changes from 0.16 - 0.17 of Elm Language)
+
+https://medium.com/wunder-nerds/storing-and-restoring-the-state-in-elm-0-17-94874429dc1d#.rby4q8end
+

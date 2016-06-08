@@ -1,26 +1,90 @@
-Î{-
-ABOUT
+{--
+
+1. ABOUT
 
 A simple Todo List application for the following Dissertation Project for student 150033255.
 Project can be located on Github @ https://github.com/ojd2/FP_Elm_Todo for locating previous versions.
 
-ARCHITECTURE
+2. ARCHITECTURE
 
 The Application has been broken down into three parts using the popular MVC pattern:
 
-1. Model (Series of methods to capture the current state of the 'world' within the application)
-2. Update (Some methods to bind and move the current state of the 'world' within the application forward)
-3. View (Some methods that accept the passed current state of the 'world' and visualise the state through HTML)
+- Model (Series of methods to capture the current state of the 'world' within the application)
+- Update (Some methods to bind and move the current state of the 'world' within the application forward)
+- View (Some methods that accept the passed current state of the 'world' and visualise the state through HTML)
 
-BUILD COMMANDS
+3. BUILD COMMANDS
 
 Run the following terminal commands from the root of the src folder:
 
 'elm-make Todo.elm --output elm.js'
 
+4. MODULES
 
+In Elm, Modules are exposed and integrated into the program using the 'exsposing' method.
+Remember that it is important to make sure that Qualified imports are preferred. 
+Module names must match their file name, so module Parser.Utils needs to be in file Parser/Utils.elm.
 
+Modules can also be imported through using native library modules such as the 0.16.0 'Basics, Debug, List, Maybe, Result', and 'Signal'.
 
--}
+What is important to identify is that Elm uses two versions of importing modules : Qualified & Unqualified.
 
+Qualified Imports will import a full range of helper functions.
+UnQualified Imports will only import chosen helper functions to be used in different locations of the application state. 
 
+--}
+
+{--
+
+0.0 SET UP MODULES
+
+With this in mind, we will be predominatley using the following Modules:
+
+1. Html (For creating and adding Html elements to DOM tree)
+2. Html.Attributes (For adding Attributes and class types to created Html elements in the DOM tree)
+3. Html.Events (For adding Event handlers to the created Html elements in the DOM tree)
+4. Html.App (Module for implementing a pattern for building Elm applications using the delegated Elm Architecture)
+5. Html.Lazy (Rather than immediately applying functions to their arguments, module will bundle up arguments up for later)
+6. Json.Decode (A package that will turn JSON strings and JS values into Elm values)
+7. String (A String package will be used for manipulating String Literal data types)
+
+--}
+import Html exposing (..)
+import Html.App as App
+import Html.Events exposing(..)
+import Html.Attributes exposing(..)
+import Html.Lazy exposing(lazy, lazy2)
+import Json.Decode as Json
+import String
+
+{-- 
+
+0.1 SET UP PROGRAM
+
+We have to begin by setting up a program structure for our application. 
+Furthermore, we have to do this in order to apply the Elm architecture to our program and understand what it is we are 
+going to show in our browser. Therefore, we can follow the Elm Docs and have a program that follows the following outline:
+
+main =
+ model = model
+ view = view 
+ update = update
+
+--}
+
+main : Program (Maybe Model) -- The 'Maybe' Model is used for representing values that may or may not exist.
+main = 
+        App.programWithFlags -- Same as 'program' but it lets you demand flags on initialization.
+        { init = init
+        , view = view
+        , update = (\msg model -> setStorage (update msg model))
+        , subscriptions = \_ Sub.none -- Similar to 'view' it is always applied to the latest model and captures any updates within the model.
+        }
+{-- 
+
+0.2 SET UP PORTS
+
+Ports are used in order to ensure that any elm programs that communicate with JavaScript must do so in a coordinated and secure way.
+
+Ports are declared in order to save the model on every update the model executes. 
+--}
