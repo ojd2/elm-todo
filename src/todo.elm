@@ -163,6 +163,6 @@ Ideally, this means that on page load we can call our 'View' function with the i
 init : Maybe Model -> (Model, Cmd Msg)
 init sateOfModel =
         -- A Maybe helps with optional arguments, error handling, and records with optional fields.
-        -- Additionally, the withDefault method is substitute a default value, turning an optional value into a normal value.
+        -- Additionally, the withDefault method is used to substitute a default value, turning an optional value into a normal value.
         Maybe.withDefault emptyModel stateOfModel ! [] -- Here our emptyModel now points to stateOfModel which ! (overides) all [] (Lists).
 
