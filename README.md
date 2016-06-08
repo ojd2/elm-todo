@@ -16,7 +16,7 @@ With hundreds of new languages compiling to JavaScript and being used throughout
 
 Each language will be evaluated and graded using some dimensions. For example, how does the interoperability behave for the language or how easily can the language be learnt and implemented?  Besides this, other constructs of the language design will be evaluated. For example, how has the language type system been designed and expressed? How does the language perform and execute to JavaScript? How much scoping functionality does the language provide? 
 
-The suite of web applications will contain small individual programs of a To Do List application built in the three languages. Reasons for building a To Do List application are because there is enough core functionality to express the languages design and performance without having to look at the explicit design of the languages themselves. It provides just enough for a critical evaluation.
+The suite of web applications will contain small individual programs of a Todo List application built in the three languages. Reasons for building a Todo List application are because there is enough core functionality to express the languages design and performance without having to look at the explicit design of the languages themselves. It provides just enough for a critical evaluation.
 
 ### Chosen Languages:
 
