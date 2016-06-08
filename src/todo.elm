@@ -78,7 +78,7 @@ main =
         App.programWithFlags -- Same as 'program' but it lets you demand flags on initialization.
         { init = init
         , view = view
-        , update = (\msg model -> setStorage (update msg model))
+        , update = (\msg model -> AddSetStorage (update msg model))
         , subscriptions = \_ Sub.none -- Similar to 'view' it is always applied to the latest model and captures any updates within the model.
         }
 {-- 
@@ -89,4 +89,24 @@ Ports are used in order to ensure that any elm programs that communicate with Ja
 
 Ports are declared in order to save the model on every update the model executes. 
 
+In conjunction, the 'Cmd' type is used for specifying 1 which effects you need access to and 2 the type of messages that will come back into your application.
+
 --}
+
+port SetStorage : Model -> Cmd msg
+port focus : String -> Cmd msg
+
+{--
+
+0.3 STORE MODEL STATE ON EVERY UPDATE
+
+We build a function here to store the model state on every update call. We have already declared the function above called 'AddSetStorage'.
+Furthermore, we pass the Model and the Cmds and bacth this together passing our 'SetStorage' function.
+
+--}
+
+AddSetStorage : (Model, Cmd Msg) -> (Model, Cmd Msg) 
+AddSetStorage (model, cmds) =
+        ( model, Cmd.batch [ SetStorage model, cmds ] )
+
+

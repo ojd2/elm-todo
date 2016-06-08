@@ -14,3 +14,10 @@ Ports, Model updates and capturing Model updates :
 
 https://medium.com/wunder-nerds/storing-and-restoring-the-state-in-elm-0-17-94874429dc1d#.rby4q8end
 
+String Package:
+
+http://package.elm-lang.org/packages/elm-lang/core/1.0.0/String
+
+Importing Modules:
+
+https://dennisreimann.de/articles/elm-import-modules.html
