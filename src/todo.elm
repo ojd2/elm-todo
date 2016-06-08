@@ -49,15 +49,16 @@ With this in mind, we will be predominatley using the following Modules:
 7. String (A String package will be used for manipulating String Literal data types)
 
 --}
+
 import Html exposing (..)
 import Html.App as App
 import Html.Events exposing(..)
 import Html.Attributes exposing(..)
 import Html.Lazy exposing(lazy, lazy2)
 import Json.Decode as Json
-import String
+import String 
 
-{-- 
+{--
 
 0.1 SET UP PROGRAM
 
@@ -87,4 +88,5 @@ main =
 Ports are used in order to ensure that any elm programs that communicate with JavaScript must do so in a coordinated and secure way.
 
 Ports are declared in order to save the model on every update the model executes. 
+
 --}
