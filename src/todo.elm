@@ -1,6 +1,10 @@
 Î{-
+ABOUT
+
 A simple Todo List application for the following Dissertation Project for student 150033255.
 Project can be located on Github @ https://github.com/ojd2/FP_Elm_Todo for locating previous versions.
+
+ARCHITECTURE
 
 The Application has been broken down into three parts using the popular MVC pattern:
 
@@ -12,7 +16,11 @@ BUILD COMMANDS
 
 Run the following terminal commands from the root of the src folder:
 
-elm-make Todo.elm --output elm.js
+'elm-make Todo.elm --output elm.js'
 
+
+
+
+-}
 
 
