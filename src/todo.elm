@@ -112,4 +112,40 @@ AddSetStorage : (Model, Cmd Msg) -> (Model, Cmd Msg)
 AddSetStorage (model, cmds) =
         ( model, Cmd.batch [ SetStorage model, cmds ] )
 
+{--
+
+1.0 SET UP MODEL 
+
+--}
+
+-- The state and structure of the application logic ::
+
+-- 1. Model -> Task -> Maybe Model
+-- 2. Model -> NewTask -> Maybe Model
+-- 3. Model -> EmptyTask -> Maybe Model
+
+type alias Model =
+        { tasks = List Task
+        , field = String
+        , visibility = String
+        }
+type alias Task =
+        { description = String
+        , visibility = String
+        , id = Int
+        , completed = Bool
+        }
+newTask : String -> Int -> Task
+newTask = desc id = 
+        { description = desc
+        , completed = False
+        , editing = False
+        , id = id
+        }
+emptyModel : Model 
+emptyModel =
+        { tasks = []
+        , visibility = "All"
+        , field = ""
+        }
 

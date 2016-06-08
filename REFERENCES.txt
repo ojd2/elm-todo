@@ -14,6 +14,12 @@ Ports, Model updates and capturing Model updates :
 
 https://medium.com/wunder-nerds/storing-and-restoring-the-state-in-elm-0-17-94874429dc1d#.rby4q8end
 
+Ports:
+
+(More on how ports should be handled and how they can be manipulated, what values and types can be accepted)
+
+http://guide.elm-lang.org/interop/javascript.html
+
 String Package:
 
 http://package.elm-lang.org/packages/elm-lang/core/1.0.0/String
