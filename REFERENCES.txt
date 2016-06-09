@@ -50,3 +50,12 @@ Other overview of Elm Language:
 
 http://www.elm-tutorial.org/en/01-foundations/02-functions.html
 
+Elm overview and DB schema 
+
+(Nice overview of the perks of Elm)
+
+http://bendyworks.com/elm-frontend-right-now/
+
+Response from Gitter on SQL integration:
+
+https://github.com/diogob/elm-workshop

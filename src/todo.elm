@@ -131,7 +131,8 @@ type alias Model =
         { tasks = List Task -- 'List' is Elm's array constructor.
         , field = String
         , visibility = String
-        }
+        , updatedId = String
+       }
 type alias Task =
         { description = String
         , visibility = String
@@ -150,6 +151,7 @@ emptyModel =
         { tasks = []
         , visibility = "All"
         , field = ""
+        , updatedId = 0
         }
 {--
 
@@ -166,3 +168,60 @@ init sateOfModel =
         -- Additionally, the withDefault method is used to substitute a default value, turning an optional value into a normal value.
         Maybe.withDefault emptyModel stateOfModel ! [] -- Here our emptyModel now points to stateOfModel which ! (overides) all [] (Lists).
 
+{-- 
+
+2.0 SET UP UPDATE
+
+The 'Update' section of the MVC acts as a general dispatch for the models actions.
+Actions take the current state of the model and yield a new model in turn, therefore the 'Update' is used for capturing new values from the Model.
+Once any new values are captured, our actions are dispatched and the models state is subsequently updated.
+
+
+--}
+
+type Msg 
+        = UpdateField String
+        | AddTask
+        | UpdateTask Int String
+        | Delete Int
+        | Delete Complete
+        | ChangeVisibility String
+
+-- For any Msg response in our Model state, recieve the response and then yield a model update.
+update :: Msg -> Model (Model, Cmd Msg)
+update msg model =
+        case msg of
+         NoOp -> -- It can be handy just to have a function that returns null. 
+          model ! [] 
+
+         AddTask -> 
+        { model
+        | updatedId = model.updatedId + 1 -- For every task added, it's id is incremented.
+        , field = ""
+        , tasks =
+                if String.isEmpty model.field then
+                   model.tasks -- Conditional for if a task is empty it simply resides as an empty field.
+                else
+                   model.tasks ++ [newTask model.field model.updatedId] -- Else if task is added, the field value acquires the updated id.
+        }
+         ! []
+
+        UpdateTask id task ->
+                let -- Let these values be...
+                    updateTask t = 
+                            if t.id = id then { t | description = task } else t
+                in -- In the following expression...
+                   { model | tasks = List.map updateTask model.tasks }
+        ! []
+
+        UpdateField str ->
+                { model | field = str }
+        ! []
+
+        Delete id ->
+                { model | tasks = List.filter (\t -> t.id /= id) model.tasks }
+        ! []
+
+        Check id isCompleted ->
+                let
+                    updateTask t = 
