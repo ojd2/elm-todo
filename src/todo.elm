@@ -179,7 +179,7 @@ Once any new values are captured, our actions are dispatched and the models stat
 
 --}
 
-type Msg 
+type Action 
         = UpdateField String
         | AddTask
         | UpdateTask Int String
@@ -188,16 +188,16 @@ type Msg
         | ChangeVisibility String
 
 -- For any Msg response in our Model state, recieve the response and then yield a model update.
-update :: Msg -> Model (Model, Cmd Msg)
-update msg model =
-        case msg of
+update :: Action -> Model (Model, Cmd Action)
+update action model =
+        case action of
          NoOp -> -- It can be handy just to have a function that returns null. 
-          model ! [] 
+          model ! [] -- So incase an action happens where there are no actions manipulating the state, do nothing to the model. 
 
-         AddTask -> 
+         AddTask -> -- However, if Adding a task is performed.
         { model
         | updatedId = model.updatedId + 1 -- For every task added, it's id is incremented.
-        , field = ""
+        , field = "" -- The input field stores a String literal.
         , tasks =
                 if String.isEmpty model.field then
                    model.tasks -- Conditional for if a task is empty it simply resides as an empty field.
@@ -206,10 +206,10 @@ update msg model =
         }
          ! []
 
-        UpdateTask id task ->
+        UpdateTask id taskAction ->
                 let -- Let these values be...
                     updateTask t = 
-                            if t.id = id then { t | description = task } else t
+                            if t.id = id then { t | description = taskAction } else t
                 in -- In the following expression...
                    { model | tasks = List.map updateTask model.tasks }
         ! []
@@ -218,10 +218,9 @@ update msg model =
                 { model | field = str }
         ! []
 
-        Delete id ->
-                { model | tasks = List.filter (\t -> t.id /= id) model.tasks }
-        ! []
+        Delete id -> model | tasks = List.filter (\t -> t.id /= id) model.tasks }
 
-        Check id isCompleted ->
-                let
-                    updateTask t = 
+        ChangeVisibility visbility ->
+                { model | visibility = visibility }
+        ! [] -- Not sure if we need these?
+
