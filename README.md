@@ -31,8 +31,10 @@ Run the following terminal commands from the root of the src folder:
 elm-make Todo.elm --output elm.js
 ```
 
+### Provided for Informational Purposes Only
+
 ```
-Provided for Informational Purposes Only
+
 MIT License
 Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 software and associated documentation files (the "Software"), to deal in the Software 
