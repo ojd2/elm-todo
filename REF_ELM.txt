@@ -1,12 +1,16 @@
 Elm Todo Program:
 
-REFERENCES:
+REFERENCES Elm:
 
 Html Module :
 
 (Contains Lazy, Events, Attributes and App)
 
 https://github.com/elm-lang/html/tree/master/src/Html
+
+Signals:
+
+
 
 Ports, Model updates and capturing Model updates :
 
@@ -59,3 +63,21 @@ http://bendyworks.com/elm-frontend-right-now/
 Response from Gitter on SQL integration:
 
 https://github.com/diogob/elm-workshop
+
+CouchDB:
+
+(A simple Config set up for CouchDB)
+
+https://github.com/kika/elm-couch/blob/master/src/CouchDb.elm
+
+Let and In:
+
+(How to read Let and in)
+
+https://www.reddit.com/r/elm/comments/3jpnhb/what_is_let_in/
+
+PostgRESTSQL:
+
+http://exponential.io/blog/2015/02/21/install-postgresql-on-mac-os-x-via-brew/
+
+
