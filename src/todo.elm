@@ -83,7 +83,7 @@ main =
         App.programWithFlags -- Same as 'program' but it lets you demand flags on initialization.
         { init = init
         , view = view
-        , update = (\msg model -> AddSetStorage (update msg model))
+        , update = (\action model -> AddSetStorage (update msg model))
         , subscriptions = \_ Sub.none -- Similar to 'view' it is always applied to the latest model and captures any other external inputs within our model.
         }
 {-- 
@@ -94,7 +94,7 @@ Ports are used in order to ensure that any elm programs that communicate with Ja
 
 Ports are declared in order to save the model on every update the model executes. 
 
-In conjunction, the 'Cmd' type is used for specifying 1 which effects you need access to and 2 the type of messages that will come back into your application.
+In conjunction, the 'Cmd' type is used for specifying 1, what effects you need access to and 2, the type of messages that will come back into your application.
 
 With this in mind, the ports act like a hole in the side of our program that can have a JavaScript source feed plugged into. 
 
@@ -106,8 +106,8 @@ These could be objects such as random numbers, random Http requests or saving St
 
 --}
 
-port SetStorage : Model -> Cmd msg -- We want to use JavaScript for 'SetStorage' function.
-port focus : String -> Cmd msg -- We also want to use JavaScript for 'focus' that takes a String and stores the Cmd.
+port SetStorage : Model -> Cmd action -- We want to use JavaScript for 'SetStorage' function.
+port focus : String -> Cmd action -- We also want to use JavaScript for 'focus' that takes a String and stores the Cmd.
 
 {--
 
@@ -115,11 +115,11 @@ port focus : String -> Cmd msg -- We also want to use JavaScript for 'focus' tha
 
 We build a function here to store the model state on every update call. We have already declared the function above called 'AddSetStorage'.
 
-Furthermore, we pass the Model and the Cmds and bacth this together passing our 'SetStorage' function.
+Furthermore, we pass the Model and the Cmds and batch this together passing our 'SetStorage' function.
 
 --}
 
-AddSetStorage : (Model, Cmd Msg) -> (Model, Cmd Msg) 
+AddSetStorage : (Model, Cmd Action) -> (Model, Cmd Action) 
 AddSetStorage (model, cmds) =
         ( model, Cmd.batch [ SetStorage model, cmds ] )
 
@@ -171,7 +171,7 @@ Ideally, this means that on page load we can call our 'View' function with the i
 
 --}
 
-init : Maybe Model -> (Model, Cmd Msg)
+init : Maybe Model -> (Model, Cmd Action)
 init sateOfModel =
         -- A Maybe helps with optional arguments, error handling, and records with optional fields.
         -- Additionally, the withDefault method is used to substitute a default value, turning an optional value into a normal value.
@@ -198,7 +198,7 @@ type Action
         | AddTask
         | UpdateTask Int String
         | Delete Int
-        | Delete Complete
+        | DeleteComplete
         | ChangeVisibility String
 
 -- For any Action (in Elm => Msg) response in our Model state, recieve the response and then yield a model update.
@@ -231,8 +231,13 @@ update action model =
         UpdateField str ->
                 { model | field = str }
         ! []
+        
+        DeleteComplete ->
+                { model | tasks = List.filter (not  << .completed) model.tasks}
+        ! []
 
-        Delete id -> model | tasks = List.filter (\t -> t.id /= id) model.tasks }
+        Delete id -> 
+                model | tasks = List.filter (\t -> t.id /= id) model.tasks }
 
         ChangeVisibility visbility ->
                 { model | visibility = visibility }
@@ -263,7 +268,7 @@ Well, the 'View' component lets us do just that.
 
 --}
 
-view : Model -> Html Actions
+view : Model -> Html Action
 view model = 
         div 
          [ class "todomvc-wrapper"
@@ -274,3 +279,88 @@ view model =
                 [ lazy taskEntry model.field
                 , lazy2 taskList model.visibility model.tasks
                 ]
+         ]
+
+enterTask : String -> Html Action
+enterTask task =
+        taskInput
+        [ id "taskInput" ]
+        [ h1 [] [text "Todos"]
+        , input
+           [id "new-todo"
+           , placeholder "What needs to be done?"
+           , autofocus True
+           , value task
+           , name "TodoItem"
+           , on "input" (Json.map UpdateField targetValue)
+           , onEnter NoOp AddTask
+           ]
+           []
+        ]
+listTasks : String -> List Task -> Html Action
+listTasks visibility tasks = 
+        let 
+            isVisible todo =
+              case visibility of
+                "Active Task" -> not todo.completed 
+                _ -> True -- Let all tasks submitted have an active state.
+
+            cssVisibility =
+              if List.isEmpty tasks then "hidden" else "visible"
+        in
+           section
+                [id "main" 
+                , style [ ("Visibility", cssVisibility) ]
+                ]
+           [ input
+           , ul 
+           [ id "todo-list"]
+           (List.map (taskItem) (List.filter isVisible tasks))
+           []
+           ]
+
+taskItem : String -> Html Action
+taskItem todo =
+        li 
+          [classList ["completed", todo.completed)]]
+          [ div
+            [class "view" ]
+          [ input
+            [class "select-todo"
+            , type' "checkbox"
+            , checked todo.completed
+            , onClick (Check todo.id (not todo.completed))
+            ]
+            []
+          , label 
+            [ text todo.description ]
+          , button
+            [ class "delete-item"
+            , onClick (Delete todo.id) 
+            ]
+            []
+          ]
+          , input 
+            [ class "task-item"
+            , value todo.description
+            , name title
+            ]
+          []
+        ]
+
+controls : String -> List Task -> Html Action
+controls visibility tasks =
+        let 
+            tasksCompleted = 
+                    List.length (List.filter .completed tasks)
+        in
+           footer 
+             [id "footer"
+             , hidden (List.isEmpty tasks)
+             ]
+             [ button 
+                [ class "clear-selected"
+                , hidden (tasksCompleted==0) 
+                , onClick DeleteComplete
+                ]
+             ]
