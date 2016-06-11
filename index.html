@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Elm Todo App Experiment</title>
+		<!-- Very Important to make sure source files are correctly located -->
+		<!-- Load JS -->
+		<!-- jQuery is needed for loading Foundation HTML -->
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<!-- We must also located our Todo.js for Elm to compile to -->
+		<script type="text/javascript" src="Todo.js"></script>
+		<!-- Here we locate the Foundation library for making our CSS & HTML look prettier -->
+		<!-- <script type="text/javascript" src="js/foundation.min.js"></script> -->
+		<!-- Locate the main Foundation HTML CSS file -->
+		<link rel="stylesheet" href="css/foundation.min.css"></link>
+		<link rel="stylesheet" href="css/main.css"></link>
+		<script type="text/javascript"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		<div class="row">
+			  <div class="small-5 small-centered columns" id="elm-holder">
+			  </div>
+		</div>
+		<script>
+	    var node = document.getElementById("elm-holder");
+	    var app = Elm.Main.embed(node);
+		</script>
+	</body>
+</html>

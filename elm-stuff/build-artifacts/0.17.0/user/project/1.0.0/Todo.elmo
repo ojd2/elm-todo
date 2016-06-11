@@ -1,0 +1,697 @@
+var _user$project$Todo$infoFooter = A2(
+	_elm_lang$html$Html$footer,
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html_Attributes$id('info')
+		]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$p,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Double-click to edit a todo')
+				])),
+			A2(
+			_elm_lang$html$Html$p,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Written by '),
+					A2(
+					_elm_lang$html$Html$a,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$href('https://github.com/evancz')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Evan Czaplicki')
+						]))
+				])),
+			A2(
+			_elm_lang$html$Html$p,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Part of '),
+					A2(
+					_elm_lang$html$Html$a,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$href('http://todomvc.com')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('TodoMVC')
+						]))
+				]))
+		]));
+var _user$project$Todo$onEnter = F2(
+	function (fail, success) {
+		var tagger = function (code) {
+			return _elm_lang$core$Native_Utils.eq(code, 13) ? success : fail;
+		};
+		return A2(
+			_elm_lang$html$Html_Events$on,
+			'keyup',
+			A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
+	});
+var _user$project$Todo$newTask = F2(
+	function (desc, id) {
+		return {description: desc, completed: false, editing: false, id: id};
+	});
+var _user$project$Todo$emptyModel = {
+	tasks: _elm_lang$core$Native_List.fromArray(
+		[]),
+	visibility: 'All',
+	field: '',
+	uid: 0
+};
+var _user$project$Todo$init = function (savedModel) {
+	return A2(
+		_elm_lang$core$Platform_Cmd_ops['!'],
+		A2(_elm_lang$core$Maybe$withDefault, _user$project$Todo$emptyModel, savedModel),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+var _user$project$Todo$setStorage = _elm_lang$core$Native_Platform.outgoingPort(
+	'setStorage',
+	function (v) {
+		return {
+			tasks: _elm_lang$core$Native_List.toArray(v.tasks).map(
+				function (v) {
+					return {description: v.description, completed: v.completed, editing: v.editing, id: v.id};
+				}),
+			field: v.field,
+			uid: v.uid,
+			visibility: v.visibility
+		};
+	});
+var _user$project$Todo$withSetStorage = function (_p0) {
+	var _p1 = _p0;
+	var _p2 = _p1._0;
+	return {
+		ctor: '_Tuple2',
+		_0: _p2,
+		_1: _elm_lang$core$Platform_Cmd$batch(
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_user$project$Todo$setStorage(_p2),
+					_p1._1
+				]))
+	};
+};
+var _user$project$Todo$focus = _elm_lang$core$Native_Platform.outgoingPort(
+	'focus',
+	function (v) {
+		return v;
+	});
+var _user$project$Todo$update = F2(
+	function (msg, model) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
+			case 'NoOp':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Add':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							uid: model.uid + 1,
+							field: '',
+							tasks: _elm_lang$core$String$isEmpty(model.field) ? model.tasks : A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.tasks,
+								_elm_lang$core$Native_List.fromArray(
+									[
+										A2(_user$project$Todo$newTask, model.field, model.uid)
+									]))
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'UpdateField':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{field: _p3._0}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'EditingTask':
+				var _p4 = _p3._0;
+				var updateTask = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p4) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{editing: _p3._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(_elm_lang$core$List$map, updateTask, model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_user$project$Todo$focus(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'#todo-',
+								_elm_lang$core$Basics$toString(_p4)))
+						]));
+			case 'UpdateTask':
+				var updateTask = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p3._0) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{description: _p3._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(_elm_lang$core$List$map, updateTask, model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Delete':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(
+								_elm_lang$core$List$filter,
+								function (t) {
+									return !_elm_lang$core$Native_Utils.eq(t.id, _p3._0);
+								},
+								model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'DeleteComplete':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(
+								_elm_lang$core$List$filter,
+								function (_p5) {
+									return _elm_lang$core$Basics$not(
+										function (_) {
+											return _.completed;
+										}(_p5));
+								},
+								model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'Check':
+				var updateTask = function (t) {
+					return _elm_lang$core$Native_Utils.eq(t.id, _p3._0) ? _elm_lang$core$Native_Utils.update(
+						t,
+						{completed: _p3._1}) : t;
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(_elm_lang$core$List$map, updateTask, model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			case 'CheckAll':
+				var updateTask = function (t) {
+					return _elm_lang$core$Native_Utils.update(
+						t,
+						{completed: _p3._0});
+				};
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{
+							tasks: A2(_elm_lang$core$List$map, updateTask, model.tasks)
+						}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{visibility: _p3._0}),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+		}
+	});
+var _user$project$Todo$Model = F4(
+	function (a, b, c, d) {
+		return {tasks: a, field: b, uid: c, visibility: d};
+	});
+var _user$project$Todo$Task = F4(
+	function (a, b, c, d) {
+		return {description: a, completed: b, editing: c, id: d};
+	});
+var _user$project$Todo$ChangeVisibility = function (a) {
+	return {ctor: 'ChangeVisibility', _0: a};
+};
+var _user$project$Todo$visibilitySwap = F3(
+	function (uri, visibility, actualVisibility) {
+		return A2(
+			_elm_lang$html$Html$li,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Events$onClick(
+					_user$project$Todo$ChangeVisibility(visibility))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$a,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$href(uri),
+							_elm_lang$html$Html_Attributes$classList(
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{
+									ctor: '_Tuple2',
+									_0: 'selected',
+									_1: _elm_lang$core$Native_Utils.eq(visibility, actualVisibility)
+								}
+								]))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(visibility)
+						]))
+				]));
+	});
+var _user$project$Todo$CheckAll = function (a) {
+	return {ctor: 'CheckAll', _0: a};
+};
+var _user$project$Todo$Check = F2(
+	function (a, b) {
+		return {ctor: 'Check', _0: a, _1: b};
+	});
+var _user$project$Todo$DeleteComplete = {ctor: 'DeleteComplete'};
+var _user$project$Todo$controls = F2(
+	function (visibility, tasks) {
+		var tasksCompleted = _elm_lang$core$List$length(
+			A2(
+				_elm_lang$core$List$filter,
+				function (_) {
+					return _.completed;
+				},
+				tasks));
+		var tasksLeft = _elm_lang$core$List$length(tasks) - tasksCompleted;
+		var item_ = _elm_lang$core$Native_Utils.eq(tasksLeft, 1) ? ' item' : ' items';
+		return A2(
+			_elm_lang$html$Html$footer,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$id('footer'),
+					_elm_lang$html$Html_Attributes$hidden(
+					_elm_lang$core$List$isEmpty(tasks))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$span,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$id('todo-count')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$strong,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(
+									_elm_lang$core$Basics$toString(tasksLeft))
+								])),
+							_elm_lang$html$Html$text(
+							A2(_elm_lang$core$Basics_ops['++'], item_, ' left'))
+						])),
+					A2(
+					_elm_lang$html$Html$ul,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$id('filters')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(_user$project$Todo$visibilitySwap, '#/', 'All', visibility),
+							_elm_lang$html$Html$text(' '),
+							A3(_user$project$Todo$visibilitySwap, '#/active', 'Active', visibility),
+							_elm_lang$html$Html$text(' '),
+							A3(_user$project$Todo$visibilitySwap, '#/completed', 'Completed', visibility)
+						])),
+					A2(
+					_elm_lang$html$Html$button,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('clear-completed'),
+							_elm_lang$html$Html_Attributes$id('clear-completed'),
+							_elm_lang$html$Html_Attributes$hidden(
+							_elm_lang$core$Native_Utils.eq(tasksCompleted, 0)),
+							_elm_lang$html$Html_Events$onClick(_user$project$Todo$DeleteComplete)
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Clear completed (',
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(tasksCompleted),
+									')')))
+						]))
+				]));
+	});
+var _user$project$Todo$Delete = function (a) {
+	return {ctor: 'Delete', _0: a};
+};
+var _user$project$Todo$Add = {ctor: 'Add'};
+var _user$project$Todo$UpdateTask = F2(
+	function (a, b) {
+		return {ctor: 'UpdateTask', _0: a, _1: b};
+	});
+var _user$project$Todo$EditingTask = F2(
+	function (a, b) {
+		return {ctor: 'EditingTask', _0: a, _1: b};
+	});
+var _user$project$Todo$UpdateField = function (a) {
+	return {ctor: 'UpdateField', _0: a};
+};
+var _user$project$Todo$NoOp = {ctor: 'NoOp'};
+var _user$project$Todo$taskEntry = function (task) {
+	return A2(
+		_elm_lang$html$Html$header,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$id('header')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h1,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('todos')
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$id('new-todo'),
+						_elm_lang$html$Html_Attributes$placeholder('What needs to be done?'),
+						_elm_lang$html$Html_Attributes$autofocus(true),
+						_elm_lang$html$Html_Attributes$value(task),
+						_elm_lang$html$Html_Attributes$name('newTodo'),
+						A2(
+						_elm_lang$html$Html_Events$on,
+						'input',
+						A2(_elm_lang$core$Json_Decode$map, _user$project$Todo$UpdateField, _elm_lang$html$Html_Events$targetValue)),
+						A2(_user$project$Todo$onEnter, _user$project$Todo$NoOp, _user$project$Todo$Add)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+			]));
+};
+var _user$project$Todo$todoItem = function (todo) {
+	return A2(
+		_elm_lang$html$Html$li,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$classList(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'completed', _1: todo.completed},
+						{ctor: '_Tuple2', _0: 'editing', _1: todo.editing}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('view')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$input,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('toggle'),
+								_elm_lang$html$Html_Attributes$type$('checkbox'),
+								_elm_lang$html$Html_Attributes$checked(todo.completed),
+								_elm_lang$html$Html_Events$onClick(
+								A2(
+									_user$project$Todo$Check,
+									todo.id,
+									_elm_lang$core$Basics$not(todo.completed)))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						A2(
+						_elm_lang$html$Html$label,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onDoubleClick(
+								A2(_user$project$Todo$EditingTask, todo.id, true))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(todo.description)
+							])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$class('destroy'),
+								_elm_lang$html$Html_Events$onClick(
+								_user$project$Todo$Delete(todo.id))
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[]))
+					])),
+				A2(
+				_elm_lang$html$Html$input,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('edit'),
+						_elm_lang$html$Html_Attributes$value(todo.description),
+						_elm_lang$html$Html_Attributes$name('title'),
+						_elm_lang$html$Html_Attributes$id(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'todo-',
+							_elm_lang$core$Basics$toString(todo.id))),
+						A2(
+						_elm_lang$html$Html_Events$on,
+						'input',
+						A2(
+							_elm_lang$core$Json_Decode$map,
+							_user$project$Todo$UpdateTask(todo.id),
+							_elm_lang$html$Html_Events$targetValue)),
+						_elm_lang$html$Html_Events$onBlur(
+						A2(_user$project$Todo$EditingTask, todo.id, false)),
+						A2(
+						_user$project$Todo$onEnter,
+						_user$project$Todo$NoOp,
+						A2(_user$project$Todo$EditingTask, todo.id, false))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[]))
+			]));
+};
+var _user$project$Todo$taskList = F2(
+	function (visibility, tasks) {
+		var cssVisibility = _elm_lang$core$List$isEmpty(tasks) ? 'hidden' : 'visible';
+		var allCompleted = A2(
+			_elm_lang$core$List$all,
+			function (_) {
+				return _.completed;
+			},
+			tasks);
+		var isVisible = function (todo) {
+			var _p6 = visibility;
+			switch (_p6) {
+				case 'Completed':
+					return todo.completed;
+				case 'Active':
+					return _elm_lang$core$Basics$not(todo.completed);
+				default:
+					return true;
+			}
+		};
+		return A2(
+			_elm_lang$html$Html$section,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$id('main'),
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'visibility', _1: cssVisibility}
+						]))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$input,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$id('toggle-all'),
+							_elm_lang$html$Html_Attributes$type$('checkbox'),
+							_elm_lang$html$Html_Attributes$name('toggle'),
+							_elm_lang$html$Html_Attributes$checked(allCompleted),
+							_elm_lang$html$Html_Events$onClick(
+							_user$project$Todo$CheckAll(
+								_elm_lang$core$Basics$not(allCompleted)))
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[])),
+					A2(
+					_elm_lang$html$Html$label,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$for('toggle-all')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Mark all as complete')
+						])),
+					A2(
+					_elm_lang$html$Html$ul,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$id('todo-list')
+						]),
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Todo$todoItem,
+						A2(_elm_lang$core$List$filter, isVisible, tasks)))
+				]));
+	});
+var _user$project$Todo$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$class('todomvc-wrapper'),
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'visibility', _1: 'hidden'}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$section,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$id('todoapp')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Todo$taskEntry, model.field),
+						A3(_elm_lang$html$Html_Lazy$lazy2, _user$project$Todo$taskList, model.visibility, model.tasks),
+						A3(_elm_lang$html$Html_Lazy$lazy2, _user$project$Todo$controls, model.visibility, model.tasks)
+					])),
+				_user$project$Todo$infoFooter
+			]));
+};
+var _user$project$Todo$main = {
+	main: _elm_lang$html$Html_App$programWithFlags(
+		{
+			init: _user$project$Todo$init,
+			view: _user$project$Todo$view,
+			update: F2(
+				function (msg, model) {
+					return _user$project$Todo$withSetStorage(
+						A2(_user$project$Todo$update, msg, model));
+				}),
+			subscriptions: function (_p7) {
+				return _elm_lang$core$Platform_Sub$none;
+			}
+		}),
+	flags: _elm_lang$core$Json_Decode$oneOf(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+				A2(
+				_elm_lang$core$Json_Decode$map,
+				_elm_lang$core$Maybe$Just,
+				A2(
+					_elm_lang$core$Json_Decode$andThen,
+					A2(_elm_lang$core$Json_Decode_ops[':='], 'field', _elm_lang$core$Json_Decode$string),
+					function (field) {
+						return A2(
+							_elm_lang$core$Json_Decode$andThen,
+							A2(
+								_elm_lang$core$Json_Decode_ops[':='],
+								'tasks',
+								_elm_lang$core$Json_Decode$list(
+									A2(
+										_elm_lang$core$Json_Decode$andThen,
+										A2(_elm_lang$core$Json_Decode_ops[':='], 'completed', _elm_lang$core$Json_Decode$bool),
+										function (completed) {
+											return A2(
+												_elm_lang$core$Json_Decode$andThen,
+												A2(_elm_lang$core$Json_Decode_ops[':='], 'description', _elm_lang$core$Json_Decode$string),
+												function (description) {
+													return A2(
+														_elm_lang$core$Json_Decode$andThen,
+														A2(_elm_lang$core$Json_Decode_ops[':='], 'editing', _elm_lang$core$Json_Decode$bool),
+														function (editing) {
+															return A2(
+																_elm_lang$core$Json_Decode$andThen,
+																A2(_elm_lang$core$Json_Decode_ops[':='], 'id', _elm_lang$core$Json_Decode$int),
+																function (id) {
+																	return _elm_lang$core$Json_Decode$succeed(
+																		{completed: completed, description: description, editing: editing, id: id});
+																});
+														});
+												});
+										}))),
+							function (tasks) {
+								return A2(
+									_elm_lang$core$Json_Decode$andThen,
+									A2(_elm_lang$core$Json_Decode_ops[':='], 'uid', _elm_lang$core$Json_Decode$int),
+									function (uid) {
+										return A2(
+											_elm_lang$core$Json_Decode$andThen,
+											A2(_elm_lang$core$Json_Decode_ops[':='], 'visibility', _elm_lang$core$Json_Decode$string),
+											function (visibility) {
+												return _elm_lang$core$Json_Decode$succeed(
+													{field: field, tasks: tasks, uid: uid, visibility: visibility});
+											});
+									});
+							});
+					}))
+			]))
+};
