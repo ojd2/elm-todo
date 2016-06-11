@@ -28,7 +28,7 @@ The suite of web applications will contain small individual programs of a Todo L
 
 Run the following terminal commands from the root of the src folder:                                         
 ```
-elm-make Todo.elm --output elm.js
+elm-make Todo.elm --output Todo.js
 ```
 
 ### Provided for Informational Purposes Only
