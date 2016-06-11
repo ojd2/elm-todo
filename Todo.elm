@@ -244,10 +244,10 @@ view model =
          [ text "Add Task" ]
          , button 
          [type' "button", class "alert clearAll button", onClick DeleteAll] 
-         [ text "Clear Task" ]
-         , button 
-         [type' "button", class "alert clearSelected button", onClick DeleteAll] 
          [ text "Clear All" ]
+         , button 
+         [type' "button", class "alert clearSelected button"] 
+         [ text "Clear Task" ]
         ] -- End HTML for Buttons inside Button Container.
     ] -- End Parent 'div'.
 taskHtml: Task -> Html Msg -- Begin View for each individual Task Todo to be displayed inside Main View of Model. 
