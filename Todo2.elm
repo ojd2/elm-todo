@@ -27,7 +27,8 @@ type Msg
   = Add String
   | Editing String
   | Remove Int
-  | EnterButton List String Int
+  | EnterButton String Int
+  | DeleteAll
 
 -- Update
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -64,13 +65,20 @@ update msg model =
     in
         (newModel, Cmd.none)
 
-    EnterButton todos text code ->
-    let
-        newTodos = 
-            if code == 13 then ("New todo added:" :: model.todos) 
-            else model.todos
-    in
-        ({ model | todos = newTodos }, Cmd.none)
+    EnterButton description code ->
+    if code == 13
+        then update (Add description) model
+        else (model, Cmd.none)
+    
+    DeleteAll ->
+    let 
+        newModel =
+          { model
+          | todos = []
+          }
+        
+    in 
+        (newModel, Cmd.none)
 
 -- Subscriptions
 subscriptions : Model -> Sub Msg
@@ -97,7 +105,7 @@ view model =
   div []
     [ h1
         []
-        [ text "Simple Todo Application" ]
+        [ text "Simple Todo Application:" ]
     , div []
         [ input
             [ value model.textField
@@ -107,7 +115,10 @@ view model =
             []
         , button
             [ onClick (Add model.textField) ]
-            [ text "Add todo item." ]
+            [ text "Add Todo" ]
+        , button
+            [ onClick (DeleteAll) ]
+            [ text "Clear All" ]
         ]
     , div [] (todoList model)
     ]
