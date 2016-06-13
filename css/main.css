@@ -1,8 +1,11 @@
 /***** Main.css File for Todo Elm Application *****/
 h1 {font-size:22px !important; text-align: center;padding:10px 0px;}
 #header {margin-top:20px;display: block;margin:0 auto;width:100%;}
+#header .todo-input {width: 100%;margin: 20px;padding: 20px;float: left;position: relative;display: block;}
 #elm-holder {margin-top: 50px !important;display: block;margin:0 auto;width:100%;}
-.clearAll {float:right !important;display:inline-block;}
-.clearSelected {float:right !important;margin-right:10px !important;display:inline-block;}
-.addTask{float:left !important;}
+.todo-list {width:100%;float:left;display: block;margin:20px 0px auto;padding:0px;text-align:center;}
+.clearAll {float:left !important;display:inline-block;margin: 0px 10px;}
+.addTask{float:left !important;margin: 0px 10px;}
 .completed {text-decoration: line-through;}
+#todo-item{border-bottom:1px solid #ddd;}
+.remove-todo{margin:10px 10px;}

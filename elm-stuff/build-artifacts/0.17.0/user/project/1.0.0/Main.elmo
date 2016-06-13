@@ -1,97 +1,172 @@
-var _user$project$Main$updateTask = F3(
-	function (task, uid, checked) {
-		return _elm_lang$core$Native_Utils.eq(task.uid, uid) ? _elm_lang$core$Native_Utils.update(
-			task,
-			{complete: checked}) : task;
-	});
-var _user$project$Main$createTask = function (model) {
-	return _elm_lang$core$String$isEmpty(model.text) ? model : _elm_lang$core$Native_Utils.update(
-		model,
-		{
-			count: model.count + 1,
-			text: '',
-			tasks: A2(
-				_elm_lang$core$Basics_ops['++'],
-				model.tasks,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						{description: model.text, uid: model.count, complete: false}
-					]))
-		});
-};
-var _user$project$Main$update = F2(
-	function (action, model) {
-		var _p0 = A2(_elm_lang$core$Debug$log, 'action', action);
-		switch (_p0.ctor) {
-			case 'TaskDescription':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{text: _p0._0});
-			case 'EnterButton':
-				return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? _user$project$Main$createTask(model) : model;
-			case 'CompleteOrIncomplete':
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						tasks: A2(
-							_elm_lang$core$List$map,
-							function (task) {
-								return A3(_user$project$Main$updateTask, task, _p0._1, _p0._0);
-							},
-							model.tasks)
-					});
-			case 'CreateTodo':
-				return _user$project$Main$createTask(model);
-			default:
-				return _elm_lang$core$Native_Utils.update(
-					model,
-					{
-						tasks: _elm_lang$core$Native_List.fromArray(
-							[]),
-						count: 1
-					});
-		}
-	});
-var _user$project$Main$onKeyUp = function (enter) {
-	return A2(
-		_elm_lang$html$Html_Events$on,
-		'keyup',
-		A2(_elm_lang$core$Json_Decode$map, enter, _elm_lang$html$Html_Events$keyCode));
-};
-var _user$project$Main$model = {
-	text: '',
-	tasks: _elm_lang$core$Native_List.fromArray(
+var _user$project$Main$initialModel = {
+	todos: _elm_lang$core$Native_List.fromArray(
 		[]),
-	count: 1
+	textField: ''
 };
-var _user$project$Main$Task = F3(
-	function (a, b, c) {
-		return {description: a, uid: b, complete: c};
+var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Main$Todo = F2(
+	function (a, b) {
+		return {text: a, id: b};
 	});
-var _user$project$Main$Model = F3(
-	function (a, b, c) {
-		return {tasks: a, text: b, count: c};
+var _user$project$Main$Model = F2(
+	function (a, b) {
+		return {todos: a, textField: b};
 	});
 var _user$project$Main$DeleteAll = {ctor: 'DeleteAll'};
-var _user$project$Main$CreateTodo = {ctor: 'CreateTodo'};
-var _user$project$Main$CompleteOrIncomplete = F2(
+var _user$project$Main$EnterButton = F2(
 	function (a, b) {
-		return {ctor: 'CompleteOrIncomplete', _0: a, _1: b};
+		return {ctor: 'EnterButton', _0: a, _1: b};
 	});
-var _user$project$Main$taskHtml = function (task) {
+var _user$project$Main$Remove = function (a) {
+	return {ctor: 'Remove', _0: a};
+};
+var _user$project$Main$todoItem = function (todo) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('row')
+				_elm_lang$html$Html_Attributes$id('todo-item')
 			]),
 		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(todo.text),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Main$Remove(todo.id)),
+						_elm_lang$html$Html_Attributes$class('remove-todo button tiny')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Remove')
+					]))
+			]));
+};
+var _user$project$Main$todoList = function (model) {
+	var _p0 = model.todos;
+	if (_p0.ctor === '[]') {
+		return _elm_lang$core$Native_List.fromArray(
 			[
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Attributes$class('small-12 columns')
+						_elm_lang$html$Html$text('Please enter some tasks!')
+					]))
+			]);
+	} else {
+		return A2(_elm_lang$core$List$map, _user$project$Main$todoItem, _p0);
+	}
+};
+var _user$project$Main$Editing = function (a) {
+	return {ctor: 'Editing', _0: a};
+};
+var _user$project$Main$Add = function (a) {
+	return {ctor: 'Add', _0: a};
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		update:
+		while (true) {
+			var _p1 = msg;
+			switch (_p1.ctor) {
+				case 'Editing':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{textField: _p1._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'Remove':
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							todos: A2(
+								_elm_lang$core$List$filter,
+								function (m) {
+									return !_elm_lang$core$Native_Utils.eq(m.id, _p1._0);
+								},
+								model.todos)
+						});
+					return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'Add':
+					var uId = A2(
+						_elm_lang$core$Maybe$withDefault,
+						0,
+						_elm_lang$core$List$maximum(
+							A2(
+								_elm_lang$core$List$map,
+								function (x) {
+									return x.id;
+								},
+								model.todos)));
+					var string = _elm_lang$core$String$trim(_p1._0);
+					var newTodo = {text: string, id: uId + 1};
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							todos: A2(
+								_elm_lang$core$List$append,
+								model.todos,
+								_elm_lang$core$Native_List.fromArray(
+									[newTodo])),
+							textField: ''
+						});
+					return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'EnterButton':
+					if (_elm_lang$core$Native_Utils.eq(_p1._1, 13)) {
+						var _v2 = _user$project$Main$Add(_p1._0),
+							_v3 = model;
+						msg = _v2;
+						model = _v3;
+						continue update;
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				default:
+					var newModel = _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							todos: _elm_lang$core$Native_List.fromArray(
+								[]),
+							textField: ''
+						});
+					return {ctor: '_Tuple2', _0: newModel, _1: _elm_lang$core$Platform_Cmd$none};
+			}
+		}
+	});
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$id('header')
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A2(
+				_elm_lang$html$Html$h1,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Simple Todo Application:')
+					])),
+				A2(
+				_elm_lang$html$Html$form,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onSubmit(
+						_user$project$Main$Add(model.textField)),
+						_elm_lang$html$Html_Attributes$id('tasks-holder')
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -99,135 +174,50 @@ var _user$project$Main$taskHtml = function (task) {
 						_elm_lang$html$Html$input,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$type$('checkbox'),
-								_elm_lang$html$Html_Attributes$id(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'checkbox_',
-									_elm_lang$core$Basics$toString(task.uid))),
-								_elm_lang$html$Html_Events$onCheck(
-								function (bool) {
-									return A2(_user$project$Main$CompleteOrIncomplete, bool, task.uid);
-								})
+								_elm_lang$html$Html_Attributes$value(model.textField),
+								_elm_lang$html$Html_Attributes$placeholder('Enter New Todo!'),
+								_elm_lang$html$Html_Attributes$autofocus(true),
+								_elm_lang$html$Html_Events$onInput(
+								function (s) {
+									return _user$project$Main$Editing(s);
+								}),
+								_elm_lang$html$Html_Attributes$class('todo-input')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
 						A2(
-						_elm_lang$html$Html$label,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$for(
-								A2(
-									_elm_lang$core$Basics_ops['++'],
-									'checkbox_',
-									_elm_lang$core$Basics$toString(task.uid))),
-								_elm_lang$html$Html_Attributes$class(
-								task.complete ? 'completed' : '')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(task.description)
-							]))
-					]))
-			]));
-};
-var _user$project$Main$EnterButton = function (a) {
-	return {ctor: 'EnterButton', _0: a};
-};
-var _user$project$Main$TaskDescription = function (a) {
-	return {ctor: 'TaskDescription', _0: a};
-};
-var _user$project$Main$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$id('header')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
-						_elm_lang$html$Html$h1,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Enter a Todo!')
-							]))
-					])),
-				A2(
-				_elm_lang$html$Html$input,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$type$('text'),
-						_elm_lang$html$Html_Attributes$placeholder('Add a task'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Main$TaskDescription),
-						_elm_lang$html$Html_Attributes$autofocus(true),
-						_elm_lang$html$Html_Attributes$value(model.text),
-						_user$project$Main$onKeyUp(_user$project$Main$EnterButton)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[])),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$id('tasks-holder')
-					]),
-				A2(_elm_lang$core$List$map, _user$project$Main$taskHtml, model.tasks)),
-				A2(
-				_elm_lang$html$Html$div,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Attributes$class('button-group')
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A2(
 						_elm_lang$html$Html$button,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$type$('button'),
-								_elm_lang$html$Html_Attributes$class('success addTask button'),
-								_elm_lang$html$Html_Events$onClick(_user$project$Main$CreateTodo)
+								_elm_lang$html$Html_Attributes$type$('submit'),
+								_elm_lang$html$Html_Attributes$class('success addTask button')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html$text('Add Task')
+								_elm_lang$html$Html$text('Add Todo')
 							])),
 						A2(
 						_elm_lang$html$Html$button,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$type$('button'),
-								_elm_lang$html$Html_Attributes$class('alert clearAll button'),
-								_elm_lang$html$Html_Events$onClick(_user$project$Main$DeleteAll)
+								_elm_lang$html$Html_Events$onClick(_user$project$Main$DeleteAll),
+								_elm_lang$html$Html_Attributes$class('alert clearAll button')
 							]),
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text('Clear All')
-							])),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Attributes$type$('button'),
-								_elm_lang$html$Html_Attributes$class('alert clearSelected button')
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Clear Task')
 							]))
-					]))
+					])),
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$class('todo-list')
+					]),
+				_user$project$Main$todoList(model))
 			]));
 };
 var _user$project$Main$main = {
-	main: _elm_lang$html$Html_App$beginnerProgram(
-		{model: _user$project$Main$model, view: _user$project$Main$view, update: _user$project$Main$update})
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
 };
