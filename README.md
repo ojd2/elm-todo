@@ -1,6 +1,6 @@
 # FP Elm Todo MVC Application
 
-The following source code has been built to be used for an comparative analysis of Elm, TypeScript and CoffeeScript in order to find alternatives to JavaScript for web development. JavaScript, although not by definition, is quickly becoming a flexible assembly language for the World Wide Web. 
+The following source code has been built to be used for an comparative analysis of Elm, TypeScript and Clojure in order to find alternatives to JavaScript for web development. JavaScript, although not by definition, is quickly becoming a flexible assembly language for the World Wide Web. 
 
 To put it simply, the browser has evolved into a small sophisticated compiler, with the ability to execute commands from a language that is so popular, it's become universal. Essentially, JavaScript is being used everywhere and anywhere it can reside and function within. Subsequently, the World Wide Web provides a vast backdrop for the language to operate within at a very concise low-level. Although the language design of JavaScript has come into question a number of times over the past 10 years, the language has become stretched, shaped and detached from its beginnings and has been an important link in the chain for modern web applications and software. 
 
@@ -22,7 +22,7 @@ The suite of web applications will contain small individual programs of a Todo L
 
 1. Elm (Elm is a typed and purely functional programming language that compiles to JavaScript)
 2. TypeScript (TypeScript is a strict superset of JavaScript that implements a universal type checking system)
-3. CoffeeScript (CoffeeScript is an untyped purely functional programming language that compiles to JavaScript)
+3. Clojure (Clojure is an untyped purely functional programming language that compiles to JavaScript)
 
 ## Load Commands
 
