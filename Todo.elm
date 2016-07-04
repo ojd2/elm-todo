@@ -229,7 +229,7 @@ view model =
         ] 
         [ input
             [ value model.textField
-            , placeholder "Enter New Todo!"
+            , placeholder "What needs to be done?"
             , autofocus True
             , onInput (\s -> Editing s)
             , class "todo-input"
